@@ -17,7 +17,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			PxekDyUx0vWXjT9T6gn3dI6gXIM=
+			LTyqEiHfxIIpYQC8ok/Hr0A1RtM=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -123,10 +123,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			H98a4aSSFMD/58VSXonjaG2b3PY=
+			HCSQDzjIwkN/BJuJAYWQCBDEOng=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"700f5efb2e3847c130abf11d3a25b4b520ae5aa5" or cdhash H"1fdf1ae1a49214c0ffe7c5525e89e3686d9bdcf6"</string>
+			<string>cdhash H"73c3f5fcaf89860c112f340afe42368cfb3e2efd" or cdhash H"1c24900f38c8c2437f049b890185900810c43a78"</string>
 		</dict>
 		<key>Resources/Base.lproj/Main.storyboardc/Info.plist</key>
 		<dict>
@@ -145,11 +145,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			PxekDyUx0vWXjT9T6gn3dI6gXIM=
+			LTyqEiHfxIIpYQC8ok/Hr0A1RtM=
 			</data>
 			<key>hash2</key>
 			<data>
-			AZq/oAWpAemwg6VycTNaRokcNVkSkNFRJ7r8qqDS82o=
+			ij6RjypzsPzcEEacyfboO77yuYAPrVowqcBdNQKvB8o=
 			</data>
 			<key>optional</key>
 			<true/>

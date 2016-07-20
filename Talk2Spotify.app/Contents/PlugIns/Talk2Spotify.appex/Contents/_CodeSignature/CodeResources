@@ -8,6 +8,10 @@
 		<data>
 		/l4hW8hLMQ78dlbyzec5IX3vuvM=
 		</data>
+		<key>Resources/archived-expanded-entitlements.xcent</key>
+		<data>
+		D3v899w9pOwezDSOd8n4366GFxg=
+		</data>
 		<key>Resources/back.ico</key>
 		<data>
 		Vlqkdp9ZATg15/pzdkwAPXY0AdM=
@@ -45,6 +49,17 @@
 			<key>hash2</key>
 			<data>
 			AecYOdmsa9NDtFfcaePjrbGGYrkQL3CYJQpA9GlsTpI=
+			</data>
+		</dict>
+		<key>Resources/archived-expanded-entitlements.xcent</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			D3v899w9pOwezDSOd8n4366GFxg=
+			</data>
+			<key>hash2</key>
+			<data>
+			lOToSqV6eLAmsTk+XqX96hNox8OHk0L3+P7Uobsp6wQ=
 			</data>
 		</dict>
 		<key>Resources/back.ico</key>

@@ -29,13 +29,21 @@ struct Api2Spotify {
     
     static func getCover() -> NSData{
         var result: NSData?
-        var id = executeScript("id of current track")
-        if( id != ""){
-            let localOrNot = id.substringToIndex(id.startIndex.advancedBy(14))
+        let idContext = executeScript("id of current track") //contains type and id of track
+        if( idContext != ""){
+            let idContextArray = idContext.componentsSeparatedByString(":")
+            // possible values are
+            // - local (for local music ;-) )
+            // - track (for music from spotify)
+            // - episode (for audio podcasts)
+            // information about video podcasts are not forwarded at the moment
+            // we only ask for album covers of type "track" because for episodes no data is available currently...
+            let idType = idContextArray[1]
+            let idString = idContextArray[2]
+            // TODO: may check for cases where we don't get this idContextString?
             
-            if( localOrNot != "spotify:local:" ){
-                id = id.substringFromIndex(id.startIndex.advancedBy(14)) //ignore 'spotify:track'
-                let request = NSMutableURLRequest(URL: NSURL(string: "https://api.spotify.com/v1/tracks/\(id)")!)
+            if( idType == "track" ){
+                let request = NSMutableURLRequest(URL: NSURL(string: "https://api.spotify.com/v1/tracks/\(idString)")!)
                 let session = NSURLSession.sharedSession()
                 request.HTTPMethod = "GET"
                 request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -81,13 +89,16 @@ struct Api2Spotify {
                 
                 task1.resume()
                 
-                while(result == nil){
+                var breakCounter = 0
+                
+                while(result == nil && breakCounter < 100 ){
                     usleep(100)
+                    breakCounter = breakCounter + 1;
                 }
-            }else{
-                result = NSData()
             }
-        }else{
+        }
+        
+        if(result == nil){
             result = NSData()
         }
         
