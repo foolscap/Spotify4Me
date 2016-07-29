@@ -17,7 +17,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			LTyqEiHfxIIpYQC8ok/Hr0A1RtM=
+			3WcdkR0ozN040iB3jVJ3H+CdH4o=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -29,6 +29,15 @@
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>Frameworks/libswiftAVFoundation.dylib</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			NDaEmUcVzZJogmp050G6FD/zqAQ=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"5a404861225cc2478daaa377462028b18fc12c7c" or cdhash H"343684994715cd9268826a74e741ba143ff3a804"</string>
+		</dict>
 		<key>Frameworks/libswiftAppKit.dylib</key>
 		<dict>
 			<key>cdhash</key>
@@ -46,6 +55,15 @@
 			</data>
 			<key>requirement</key>
 			<string>cdhash H"9a56f793d75d4e1fcbdc226fdba48e20cb90c7e7" or cdhash H"5c4c15a002ce52745e640d64807f51abbc59a274"</string>
+		</dict>
+		<key>Frameworks/libswiftCoreAudio.dylib</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			LiYYXfNHv1Plz2l2Dk0PCd1UHOM=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"476a06a2bd22114633ef0b8b19d7761dfbd4404d" or cdhash H"2e26185df347bf53e5cf69760e4d0f09dd541ce3"</string>
 		</dict>
 		<key>Frameworks/libswiftCoreData.dylib</key>
 		<dict>
@@ -73,6 +91,15 @@
 			</data>
 			<key>requirement</key>
 			<string>cdhash H"f61813731ed1780a5be5dce9367508a45933cf31" or cdhash H"432cb7e8916cf993f3bb9474730f0b04b96748f7"</string>
+		</dict>
+		<key>Frameworks/libswiftCoreMedia.dylib</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			t6/Pkf4/FgGj0qhY3SkB8wJsQxw=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"3deb0b2e17abb59f74f613c33a0d0282b73fffae" or cdhash H"b7afcf91fe3f1601a3d2a858dd2901f3026c431c"</string>
 		</dict>
 		<key>Frameworks/libswiftDarwin.dylib</key>
 		<dict>
@@ -123,10 +150,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			HCSQDzjIwkN/BJuJAYWQCBDEOng=
+			RYFp8FVDMTvFwkfguju1FrmbbjU=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"73c3f5fcaf89860c112f340afe42368cfb3e2efd" or cdhash H"1c24900f38c8c2437f049b890185900810c43a78"</string>
+			<string>cdhash H"6927c4ec661cea3888c85f81bf9c5d126a5618ad" or cdhash H"458169f05543313bc5c247e0ba3bb516b99b6e35"</string>
 		</dict>
 		<key>Resources/Base.lproj/Main.storyboardc/Info.plist</key>
 		<dict>
@@ -145,11 +172,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			LTyqEiHfxIIpYQC8ok/Hr0A1RtM=
+			3WcdkR0ozN040iB3jVJ3H+CdH4o=
 			</data>
 			<key>hash2</key>
 			<data>
-			ij6RjypzsPzcEEacyfboO77yuYAPrVowqcBdNQKvB8o=
+			7a99OR1PYcRAbBO20a17yLsfzDyDXGpOVBswLt2UhW4=
 			</data>
 			<key>optional</key>
 			<true/>

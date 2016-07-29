@@ -44,6 +44,19 @@
 	<true/>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.10</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>images.spotify.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2014 Lucas Backert. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>

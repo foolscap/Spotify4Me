@@ -7,6 +7,7 @@
 //
 import Foundation
 import AppKit
+import AVFoundation
 
 struct Api2Spotify {
     static let osaStart = "tell application \"Spotify\" to"
@@ -29,79 +30,49 @@ struct Api2Spotify {
     
     static func getCover() -> NSData{
         var result: NSData?
-        let idContext = executeScript("id of current track") //contains type and id of track
-        if( idContext != ""){
-            let idContextArray = idContext.componentsSeparatedByString(":")
-            // possible values are
-            // - local (for local music ;-) )
-            // - track (for music from spotify)
-            // - episode (for audio podcasts)
-            // information about video podcasts are not forwarded at the moment
-            // we only ask for album covers of type "track" because for episodes no data is available currently...
-            let idType = idContextArray[1]
-            let idString = idContextArray[2]
-            // TODO: may check for cases where we don't get this idContextString?
+        let artworkURL = executeScript("artwork url of current track")
+
+        if(artworkURL.containsString("spotify:localfileimage")){
+            let artworkURLArray = artworkURL.componentsSeparatedByString(":")
+            var artworkURLString = artworkURLArray[2]
+            artworkURLString = artworkURLString.stringByRemovingPercentEncoding!
             
-            if( idType == "track" ){
-                let request = NSMutableURLRequest(URL: NSURL(string: "https://api.spotify.com/v1/tracks/\(idString)")!)
-                let session = NSURLSession.sharedSession()
-                request.HTTPMethod = "GET"
-                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-                
-                let task1 = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
-                    if(error == nil && data != nil){
-                        var imageurl: String?
-                        let jsonvalue: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves)
-                        
-                        if(jsonvalue != nil ){
-                            let jsondict = jsonvalue as! NSDictionary
-                            let albumvalue = jsondict.valueForKey("album")
-                            
-                            if(albumvalue != nil ){
-                                let imagesdict = albumvalue!.valueForKey("images") as! NSArray
-                                let imageinfo = imagesdict[2] as! NSDictionary
-                                imageurl = imageinfo.valueForKey("url") as? String
-                            }
-                        }
-                        
-                        if(imageurl != nil){
-                            
-                            let request2 = NSMutableURLRequest(URL: NSURL(string: imageurl!)!)
-                            let session2 = NSURLSession.sharedSession()
-                            request2.HTTPMethod = "GET"
-                            request2.addValue("image/jpeg", forHTTPHeaderField: "Content-Type")
-                            
-                            let task2 = session2.dataTaskWithRequest(request2, completionHandler: {data2, response2, error2 -> Void in
-                                if(data2 != nil){
-                                    result = data2!
-                                }else{
-                                    result = NSData()
-                                }
-                            })
-                            task2.resume()
-                            
-                        }
-                        
-                    }else{
-                        result = NSData()
+            let asset = AVURLAsset.init(URL: NSURL(fileURLWithPath: artworkURLString))
+            let metadata = asset.commonMetadata
+            for (_,element) in metadata.enumerate() {
+                if element.commonKey == AVMetadataCommonKeyArtwork {
+                    if element.dataValue != nil {
+                        result = NSData(data: element.dataValue!)
                     }
-                })
-                
-                task1.resume()
-                
-                var breakCounter = 0
-                
-                while(result == nil && breakCounter < 100 ){
-                    usleep(100)
-                    breakCounter = breakCounter + 1;
+                    break
                 }
             }
-        }
-        
-        if(result == nil){
+        }else if(artworkURL.containsString("http://images.spotify.com/image/")){
+            let urlSession = NSURLSession.sharedSession()
+            let urlRequest = NSMutableURLRequest(URL: NSURL(string: artworkURL)!)
+            
+            let taskWithRequest = urlSession.dataTaskWithRequest(urlRequest, completionHandler: {data, response, error -> Void in
+                if(error != nil){
+                    print("error: \(error)")
+                }
+                if(data != nil){
+                    result = data!
+                }else{
+                    result = NSData()
+                }
+            })
+            taskWithRequest.resume()
+        }else if (artworkURL == ""){
             result = NSData()
         }
         
+        var counter = 0
+        while(result == nil && counter < 100){ //Wait for the task to finish
+            usleep(10000)
+            counter = counter + 1
+        }
+        
+        if(result == nil) {result = NSData()}
         return result!
     }
     

@@ -561,6 +561,7 @@
 				);
 				INFOPLIST_FILE = Talk2Spotify4Me/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = backert.Talk2Spotify.Talk2Spotify4Me;
 				PRODUCT_NAME = Talk2Spotify;
 				SKIP_INSTALL = YES;
@@ -575,6 +576,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Talk2Spotify4Me/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = backert.Talk2Spotify.Talk2Spotify4Me;
 				PRODUCT_NAME = Talk2Spotify;
 				SKIP_INSTALL = YES;
