@@ -14,7 +14,7 @@ class TodayViewController: NSViewController, NCWidgetProviding {
         return "TodayViewController"
     }
     
-    var widgetAllowsEditing = true
+    let widgetAllowsEditing = true
     
     let smState = "smState"
     let smTitle = "smTitle"
@@ -22,8 +22,10 @@ class TodayViewController: NSViewController, NCWidgetProviding {
     let smArtist = "smArtist"
     let smCover = "smCover"
     let smVolume = "smVolume"
-    let smShowCover = "smShowCover"
+    let smShowTitle = "smShowTitle"
     let smShowAlbum = "smShowAlbum"
+    let smShowArtist = "smShowArtist"
+    let smShowCover = "smShowCover"
     let smShowVolumeSlide = "smShowVolumeSlide"
     let smShowPlayButtons = "smShowPlayButtons"
     
@@ -31,9 +33,9 @@ class TodayViewController: NSViewController, NCWidgetProviding {
     let pauseImage = NSImage(named: "pause")
 
     var initialize = true
+    var information = [String:AnyObject]()
     var defaults = NSUserDefaults(suiteName: "backert.apps")!
     var centerReceiver = NSDistributedNotificationCenter()
-    var information = [String:AnyObject]()
     var controller = NCWidgetController.widgetController()
     
     @IBOutlet weak var titleOutput: NSTextField!
@@ -46,178 +48,94 @@ class TodayViewController: NSViewController, NCWidgetProviding {
     @IBOutlet weak var previousButton: NSButton!
     @IBOutlet weak var buttonCollection: NSStackView!
     
-    
-    @IBOutlet weak var showCover: NSButton!
+    @IBOutlet weak var showTitle: NSButton!
     @IBOutlet weak var showAlbum: NSButton!
+    @IBOutlet weak var showArtist: NSButton!
+    @IBOutlet weak var showCover: NSButton!
     @IBOutlet weak var showVolumeSlide: NSButton!
     @IBOutlet weak var showPlayButtons: NSButton!
     
-    var showCoverBoolean = true
-    var showAlbumBoolean = true
-    var showVolumeSlidesBoolean = true
-    var showPlayButtonsBoolean = true
-    
     @IBOutlet weak var CoverHight: NSLayoutConstraint!
+    
     @IBAction func volumeSliderAction(sender: AnyObject) {
-        let notify = NSNotification(name: "Talk2Spotify4Me", object: "volume\(sender.integerValue)")
-        centerReceiver.postNotification(notify)
+        postNotification("volume\(sender.integerValue)")
     }
     @IBAction func previousButton(sender: AnyObject) {
-        let notify = NSNotification(name: "Talk2Spotify4Me", object: "back")
-        centerReceiver.postNotification(notify)
+        postNotification("back")
     }
     @IBAction func nextButton(sender: AnyObject) {
-        let notify = NSNotification(name: "Talk2Spotify4Me", object: "skip")
-        centerReceiver.postNotification(notify)
+        postNotification("skip")
     }
     @IBAction func playpauseButton(sender: AnyObject) {
-        let notify = NSNotification(name: "Talk2Spotify4Me", object: "playpause")
+        postNotification("playpause")
+    }
+    
+    func postNotification(note: String){
+        let notify = NSNotification(name: "Talk2Spotify4Me", object: note)
         centerReceiver.postNotification(notify)
     }
     
     override func viewWillAppear() {
         super.viewWillAppear()
-        if initialize {
-            self.information = self.defaults.persistentDomainForName("backert.apps")!
-            
-            if (  information[smShowCover] != nil) {
-                showCoverBoolean = information[smShowCover] as! Bool
-                if ( showCoverBoolean ){
-                    showCover.state = 1
-                    coverOutput.hidden = false
-                }else{
-                    showCover.state = 0
-                    coverOutput.hidden = true
-                }
-            }else {
-                information.updateValue(true, forKey: smShowCover)
-            }
-            
-            if ( information[smShowAlbum] != nil) {
-                showAlbumBoolean = information[smShowAlbum] as! Bool
-                if ( showAlbumBoolean ){
-                    showAlbum.state = 1
-                    albumOutput.hidden = false
-                }else{
-                    showAlbum.state = 0
-                    albumOutput.hidden = true
-                }
-            }else {
-                information.updateValue(true, forKey: smShowAlbum)
-            }
-            
-            if ( information[smShowPlayButtons] != nil) {
-                showPlayButtonsBoolean = information[smShowPlayButtons] as! Bool
-                if ( showPlayButtonsBoolean ){
-                    showPlayButtons.state = 1
-                    buttonCollection.hidden = false
-                }else{
-                    showPlayButtons.state = 0
-                    buttonCollection.hidden = true
-                }
-            }else {
-                information.updateValue(true, forKey: smShowPlayButtons)
-            }
-            
-            if ( information[smShowVolumeSlide] != nil) {
-                showVolumeSlidesBoolean = information[smShowVolumeSlide] as! Bool
-                if ( showVolumeSlidesBoolean ){
-                    showVolumeSlide.state = 1
-                    volumeSlider.hidden = false
-                }else{
-                    showVolumeSlide.state = 0
-                    volumeSlider.hidden = true
-                }
-            }else {
-                information.updateValue(true, forKey: smShowVolumeSlide)
-            }
-            
-            defaults.setPersistentDomain(information, forName: "backert.apps")
-            defaults.synchronize()
-            
-            showCover.hidden = true
-            showAlbum.hidden = true
-            showPlayButtons.hidden = true
-            showVolumeSlide.hidden = true
-            
-            setReceiver()
-
-            initialize = false
-        }
-        checkForTalk2Spotify()
-        
+        if initialize { initializeApp() }
+        checkForAppsAndUpdateView()
     }
     
-    func setReceiver(){
-        self.centerReceiver.addObserverForName("Talk2Spotify4Me", object: nil, queue: nil) { (note) -> Void in
+    func initializeApp(){
+        checkAndSetHiddenState(button: showTitle, smKey: smShowTitle, viewToHide: titleOutput)
+        checkAndSetHiddenState(button: showAlbum, smKey: smShowAlbum, viewToHide: albumOutput)
+        checkAndSetHiddenState(button: showArtist, smKey: smShowArtist, viewToHide: artistOutput)
+        checkAndSetHiddenState(button: showCover, smKey: smShowCover, viewToHide: coverOutput)
+        checkAndSetHiddenState(button: showPlayButtons, smKey: smShowPlayButtons, viewToHide: buttonCollection)
+        checkAndSetHiddenState(button: showVolumeSlide, smKey: smShowVolumeSlide, viewToHide: volumeSlider)
+        centerReceiver.addObserverForName("Talk2Spotify4Me", object: nil, queue: nil) { (note) -> Void in
             let cmd = note.object as! String
             if cmd == "finished" {
                 self.refreshView()
-                self.isSpotifyOn()
             }
         }
-        self.centerReceiver.addObserverForName("com.spotify.client.PlaybackStateChanged", object: nil, queue: nil) { (note) -> Void in
-            self.checkForTalk2Spotify()
-            
-            //further code may useable to show notification only if a new track is played
-//            let trackInfo = note.userInfo
-//            print(trackInfo)
-//            if(trackInfo != nil){
-//                print(trackInfo!["Player State"])
-//                print(trackInfo!["Track ID"])
-//            }
-            
+        centerReceiver.addObserverForName("com.spotify.client.PlaybackStateChanged", object: nil, queue: nil) { (note) -> Void in
+            self.checkForAppsAndUpdateView()
         }
+        hideEditingOptions(true)
+        initialize = false
     }
     
-    func checkForTalk2Spotify(){
-        let notify = NSNotification(name: "Talk2Spotify4Me", object: "update")
-        let mainapp: [NSRunningApplication] = NSRunningApplication.runningApplicationsWithBundleIdentifier("backert.Talk2Spotify") as [NSRunningApplication]
-        let spotifyIsOn = self.isSpotifyOn()
-        if mainapp.isEmpty {
-            titleOutput.stringValue = "Please start 'Talk2Spotify' application"
-            self.albumOutput.stringValue = ""
-            self.artistOutput.stringValue = ""
-            self.coverOutput.image = nil
-            
-        }else {
-            if spotifyIsOn {
-                centerReceiver.postNotification(notify)
+    func checkAndSetHiddenState(button button: NSButton, smKey: String, viewToHide: NSView){
+        let informationcache = self.defaults.persistentDomainForName("backert.apps")
+        if informationcache != nil { information = informationcache! }
+        
+        if information[smKey] != nil {
+            let showView = information[smKey] as! Bool
+            if showView {
+                button.state = 1
+                viewToHide.hidden = false
+            }else{
+                button.state = 0
+                viewToHide.hidden = true
             }
+        }else {
+            information.updateValue(true, forKey: smKey)
         }
+        
+        defaults.setPersistentDomain(information, forName: "backert.apps")
+        defaults.synchronize()
     }
     
     func refreshView(){
-        self.information = self.defaults.persistentDomainForName("backert.apps")!
-        let title = information[smTitle] as? String
-        let album = information[smAlbum] as? String
-        let artist = information[smArtist] as? String
-        let volume = information[smVolume] as? String
-        
-        if (title != nil) {
-            titleOutput.stringValue = title!
-        }
-        
-        if (album != nil) {
-            albumOutput.stringValue = album!
-        }
-        
-        if (artist != nil) {
-            artistOutput.stringValue = artist!
-        }
-        
-        if (volume != nil) {
-            let volumeAsInteger = Int(volume!)
-            if (volumeAsInteger != nil && volumeAsInteger! >= 0 && volumeAsInteger! <= 100) {
-                volumeSlider.integerValue = volumeAsInteger!
-            }
-        }
+        let informationcache = self.defaults.persistentDomainForName("backert.apps")
+        if informationcache != nil { information = informationcache! }
+
+        titleOutput.stringValue = information[smTitle] as! String
+        albumOutput.stringValue = information[smAlbum] as! String
+        artistOutput.stringValue = information[smArtist] as! String
+        let volAsInt = Int(information[smVolume] as! String)
+        if volAsInt != nil && volAsInt! >= 0 && volAsInt! <= 100 { volumeSlider.integerValue = volAsInt! }
         
         let coverAsData = information[smCover] as? NSData
-
-        if(coverAsData != nil){
+        if coverAsData != nil {
             let imageobj = NSImage.init(data: coverAsData!)
-            if( !coverAsData!.isEqualToData(NSData()) && imageobj != nil ){
+            if !coverAsData!.isEqualToData(NSData()) && imageobj != nil {
                 CoverHight.constant = CGFloat(64)
                 coverOutput.image = imageobj
             }else{
@@ -226,7 +144,7 @@ class TodayViewController: NSViewController, NCWidgetProviding {
         }
     
         let state = information[smState] as? String
-        if (state != nil) {
+        if state != nil {
             if state == "kPSP" {
                 playpauseButton.image = pauseImage
             }else if state == "kPSp" {
@@ -235,86 +153,70 @@ class TodayViewController: NSViewController, NCWidgetProviding {
         }
     }
     
-    func isSpotifyOn() -> Bool{
-        let spotifyapp: [NSRunningApplication] = NSRunningApplication.runningApplicationsWithBundleIdentifier("com.spotify.client") as [NSRunningApplication]
-        if spotifyapp.isEmpty {
-            controller.setHasContent(false, forWidgetWithBundleIdentifier: "backert.Talk2Spotify.Talk2Spotify4Me")
-            return false
+    func checkForAppsAndUpdateView(){
+        let mainapp: [NSRunningApplication] = NSRunningApplication.runningApplicationsWithBundleIdentifier("backert.Talk2Spotify") as [NSRunningApplication]
+        if mainapp.isEmpty {
+            titleOutput.stringValue = "Please start 'Talk2Spotify' application"
+            albumOutput.stringValue = ""
+            artistOutput.stringValue = ""
+            coverOutput.image = nil
         }else {
-            controller.setHasContent(true, forWidgetWithBundleIdentifier: "backert.Talk2Spotify.Talk2Spotify4Me")
-            return true
+            let spotifyapp: [NSRunningApplication] = NSRunningApplication.runningApplicationsWithBundleIdentifier("com.spotify.client") as [NSRunningApplication]
+            if spotifyapp.isEmpty {
+                controller.setHasContent(false, forWidgetWithBundleIdentifier: "backert.Talk2Spotify.Talk2Spotify4Me")
+            }else {
+                controller.setHasContent(true, forWidgetWithBundleIdentifier: "backert.Talk2Spotify.Talk2Spotify4Me")
+                postNotification("update")
+            }
         }
     }
-    
-    
     
     func widgetDidBeginEditing() {
-        showCover.hidden = false
-        showAlbum.hidden = false
-        showPlayButtons.hidden = false
-        showVolumeSlide.hidden = false
+        hideEditingOptions(false)
     }
-    
+
     func widgetDidEndEditing() {
-        showCover.hidden = true
-        showAlbum.hidden = true
-        showPlayButtons.hidden = true
-        showVolumeSlide.hidden = true        
+        hideEditingOptions(true)
     }
     
-    @IBAction func changeHiddenStateForCover(sender: NSButton) {
-        self.information = self.defaults.persistentDomainForName("backert.apps")!
-        
-        if(sender.state == 1){
-            information.updateValue(true, forKey: smShowCover)
-            coverOutput.hidden = false
-        }else{
-            information.updateValue(false, forKey: smShowCover)
-            coverOutput.hidden = true
-        }
-        
-        defaults.setPersistentDomain(information, forName: "backert.apps")
-        defaults.synchronize()
+    func hideEditingOptions(isHidden: Bool){
+        showTitle.hidden = isHidden
+        showAlbum.hidden = isHidden
+        showArtist.hidden = isHidden
+        showCover.hidden = isHidden
+        showPlayButtons.hidden = isHidden
+        showVolumeSlide.hidden = isHidden
+    }
+    
+    @IBAction func changeHiddenStateForTitle(sender: NSButton) {
+        changeHiddenState(button: sender,smKey: smShowTitle,viewToHide: titleOutput)
     }
     @IBAction func changeHiddenStateForAlbum(sender: NSButton) {
-        self.information = self.defaults.persistentDomainForName("backert.apps")!
-        
-        if(sender.state == 1){
-            information.updateValue(true, forKey: smShowAlbum)
-            albumOutput.hidden = false
-        }else{
-            information.updateValue(false, forKey: smShowAlbum)
-            albumOutput.hidden = true
-        }
-        
-        defaults.setPersistentDomain(information, forName: "backert.apps")
-        defaults.synchronize()
+        changeHiddenState(button: sender,smKey: smShowAlbum,viewToHide: albumOutput)
+    }
+    @IBAction func changeHiddenStateForArtist(sender: NSButton) {
+        changeHiddenState(button: sender,smKey: smShowArtist,viewToHide: artistOutput)
+    }
+    @IBAction func changeHiddenStateForCover(sender: NSButton) {
+        changeHiddenState(button: sender,smKey: smShowCover,viewToHide: coverOutput)
     }
     @IBAction func changeHiddenStateForPlayButtons(sender: NSButton) {
-        self.information = self.defaults.persistentDomainForName("backert.apps")!
-        
-        if(sender.state == 1){
-            information.updateValue(true, forKey: smShowPlayButtons)
-            buttonCollection.hidden = false
-        }else{
-            information.updateValue(false, forKey: smShowPlayButtons)
-            buttonCollection.hidden = true
-        }
-        
-        defaults.setPersistentDomain(information, forName: "backert.apps")
-        defaults.synchronize()
+        changeHiddenState(button: sender,smKey: smShowPlayButtons,viewToHide: buttonCollection)
     }
     @IBAction func changeHiddenStateForVolumeSlide(sender: NSButton) {
-        self.information = self.defaults.persistentDomainForName("backert.apps")!
-        
-        if(sender.state == 1){
-            information.updateValue(true, forKey: smShowVolumeSlide)
-            volumeSlider.hidden = false
+        changeHiddenState(button: sender,smKey: smShowVolumeSlide,viewToHide: volumeSlider)
+    }
+    
+    func changeHiddenState(button button: NSButton, smKey: String, viewToHide: NSView){
+        let informationcache = self.defaults.persistentDomainForName("backert.apps")
+        if informationcache != nil { information = informationcache! }
+        if(button.state == 1){
+            information.updateValue(true, forKey: smKey)
+            viewToHide.hidden = false
         }else{
-            information.updateValue(false, forKey: smShowVolumeSlide)
-            volumeSlider.hidden = true
+            information.updateValue(false, forKey: smKey)
+            viewToHide.hidden = true
         }
-        
         defaults.setPersistentDomain(information, forName: "backert.apps")
         defaults.synchronize()
     }

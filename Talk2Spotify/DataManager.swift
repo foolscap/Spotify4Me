@@ -24,46 +24,42 @@ class DataManager {
     init(){
         centerReceiver.addObserverForName("Talk2Spotify4Me", object: nil, queue: nil) { (note) -> Void in
             var defaultcase = false
-            let cmd = note.object as! String
-            switch cmd {
-            case "update":
-                self.update()
-            case "playpause":
-                self.playpause()
-            case "skip":
-                self.skip()
-            case "back":
-                self.back()
-            case "finished":
-                defaultcase = true
-                break
-            case let volumestring :
-                if let range = volumestring.rangeOfString("volume") {
-                    let stringVol:String = volumestring.substringFromIndex(range.endIndex)
-                    self.volume(Int(stringVol)!)
+            let cmd = note.object as? String
+            if cmd != nil {
+                switch cmd! {
+                case "update":
+                    self.update()
+                case "playpause":
+                    Api2Spotify.toPlayPause()
+                case "skip":
+                    Api2Spotify.toNextTrack()
+                case "back":
+                    Api2Spotify.toPreviousTrack()
+                case "finished":
+                    defaultcase = true
+                    break
+                case let volumestring :
+                    if let range = volumestring.rangeOfString("volume") {
+                        let stringVol:String = volumestring.substringFromIndex(range.endIndex)
+                        Api2Spotify.setVolume(Int(stringVol)!)
+                    }
+                }
+                
+                if !defaultcase {
+                    self.update()
+                    let notify = NSNotification(name: "Talk2Spotify4Me", object: "finished")
+                    self.centerReceiver.postNotification(notify)
                 }
             }
-            if !defaultcase {
-                let notify = NSNotification(name: "Talk2Spotify4Me", object: "finished")
-                self.centerReceiver.postNotification(notify)
-            }
-        }
-        
-        self.centerReceiver.addObserverForName("com.spotify.client.PlaybackStateChanged", object: nil, queue: nil) { (note) -> Void in
-            let info = note.userInfo!
-            let state = info["Player State"]! as! String
-            let controller = NCWidgetController.widgetController()
-            
-            if state == "Stopped" {
-                controller.setHasContent(false, forWidgetWithBundleIdentifier: "backert.Talk2Spotify.Talk2Spotify4Me")
-            }else{
-                controller.setHasContent(true, forWidgetWithBundleIdentifier: "backert.Talk2Spotify.Talk2Spotify4Me")
-            }
-            self.update()
         }
     }
+    
     func update(){
+        let informationcache = self.defaults.persistentDomainForName("backert.apps")
+        if informationcache != nil { information = informationcache! }
+        
         let state = Api2Spotify.getState()
+        // state == "" is only returned if Spotify is not started, therefore no content check in the further context.
         if state != "" {
             information.updateValue(state, forKey: smState)
             if state != "kPSS" {
@@ -71,37 +67,20 @@ class DataManager {
                 information.updateValue(Api2Spotify.getAlbum(), forKey: smAlbum)
                 information.updateValue(Api2Spotify.getArtist(), forKey: smArtist)
                 information.updateValue(Api2Spotify.getCover(), forKey: smCover)
-                let volume = Api2Spotify.getVolume()
-                if volume != "" {
-                    information.updateValue(volume, forKey: smVolume)
-                }
+                information.updateValue(Api2Spotify.getVolume(), forKey: smVolume)
+                
             }
             defaults.setPersistentDomain(information, forName: "backert.apps")
             defaults.synchronize()
-        }
-    }
-    func playpause(){
-        Api2Spotify.toPlayPause()
-        update()
-    }
-    func skip(){
-        Api2Spotify.toNextTrack()
-        update()
-    }
-    func back(){
-        Api2Spotify.toPreviousTrack()
-        update()
-    }
-    func volume(level: Int){
-        Api2Spotify.setVolume(level)
-        update()
-    }
-    func isSpotifyOn() -> Bool{
-        let spotifyapp: [NSRunningApplication] = NSRunningApplication.runningApplicationsWithBundleIdentifier("com.spotify.client") as [NSRunningApplication]
-        if spotifyapp.isEmpty {
-            return false
         }else {
-            return true
+            information.updateValue("", forKey: smState)
+            information.updateValue("", forKey: smTitle)
+            information.updateValue("", forKey: smAlbum)
+            information.updateValue("", forKey: smArtist)
+            information.updateValue(NSData(), forKey: smCover)
+            information.updateValue("100", forKey: smVolume)
+            defaults.setPersistentDomain(information, forName: "backert.apps")
+            defaults.synchronize()
         }
     }
 }

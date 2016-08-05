@@ -17,8 +17,10 @@
                 <outlet property="playpauseButton" destination="pcw-0Z-NtY" id="cs3-gM-n1k"/>
                 <outlet property="previousButton" destination="WDj-mg-LZM" id="TSB-lZ-JCV"/>
                 <outlet property="showAlbum" destination="MNw-Y7-VDe" id="Alh-Vc-AQR"/>
+                <outlet property="showArtist" destination="OvZ-bd-zPn" id="1jw-NW-I34"/>
                 <outlet property="showCover" destination="ixH-6C-YM1" id="m5m-I8-lQR"/>
                 <outlet property="showPlayButtons" destination="ifC-kX-6nz" id="YJj-2v-ti3"/>
+                <outlet property="showTitle" destination="O9Y-23-Pr8" id="7AJ-Xj-RnB"/>
                 <outlet property="showVolumeSlide" destination="ltb-zR-eUw" id="iWt-kG-YkU"/>
                 <outlet property="titleOutput" destination="cOj-CV-bvY" id="N1k-jl-UBU"/>
                 <outlet property="view" destination="bJI-8O-kfu" id="b5K-Tb-oRV"/>
@@ -132,14 +134,14 @@
                             </constraints>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="JGE-Oy-IUa"/>
                         </imageView>
-                        <button hidden="YES" canDrawConcurrently="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ixH-6C-YM1">
-                            <rect key="frame" x="110" y="99" width="95" height="18"/>
-                            <buttonCell key="cell" type="check" title="Show Cover" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="a1k-tT-Mm9">
+                        <button hidden="YES" canDrawConcurrently="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O9Y-23-Pr8">
+                            <rect key="frame" x="114" y="99" width="86" height="18"/>
+                            <buttonCell key="cell" type="check" title="Show Titel" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="yqc-Ct-Drk">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                             <connections>
-                                <action selector="changeHiddenStateForCover:" target="-2" id="M7n-KK-fm6"/>
+                                <action selector="changeHiddenStateForTitle:" target="-2" id="Zfn-zf-4f9"/>
                             </connections>
                         </button>
                         <button hidden="YES" canDrawConcurrently="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MNw-Y7-VDe">
@@ -150,6 +152,26 @@
                             </buttonCell>
                             <connections>
                                 <action selector="changeHiddenStateForAlbum:" target="-2" id="e1e-xz-awG"/>
+                            </connections>
+                        </button>
+                        <button hidden="YES" canDrawConcurrently="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OvZ-bd-zPn">
+                            <rect key="frame" x="111" y="99" width="92" height="18"/>
+                            <buttonCell key="cell" type="check" title="Show Artist" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="jeG-Fv-i3i">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="changeHiddenStateForArtist:" target="-2" id="PbI-7n-ssT"/>
+                            </connections>
+                        </button>
+                        <button hidden="YES" canDrawConcurrently="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ixH-6C-YM1">
+                            <rect key="frame" x="110" y="99" width="95" height="18"/>
+                            <buttonCell key="cell" type="check" title="Show Cover" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="a1k-tT-Mm9">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="changeHiddenStateForCover:" target="-2" id="M7n-KK-fm6"/>
                             </connections>
                         </button>
                         <button hidden="YES" canDrawConcurrently="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ifC-kX-6nz">
@@ -184,8 +206,12 @@
                         <integer value="1000"/>
                         <integer value="1000"/>
                         <integer value="1000"/>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
                     </visibilityPriorities>
                     <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>

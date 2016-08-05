@@ -98,25 +98,16 @@ struct Api2Spotify {
     
     static func executeScript(phrase: String) -> String{
         var output = ""
-        if(isSpotifyOn()){
+        let spotifyapp: [NSRunningApplication] = NSRunningApplication.runningApplicationsWithBundleIdentifier("com.spotify.client") as [NSRunningApplication]
+        if( !spotifyapp.isEmpty ){
             let script = NSAppleScript(source: "\(osaStart) \(phrase)" )
             var errorInfo: NSDictionary?
             let descriptor = script?.executeAndReturnError(&errorInfo)
             if(descriptor?.stringValue != nil){
                 output = descriptor!.stringValue!
             }
-
         }
         return output
-    }
-    
-    static func isSpotifyOn() -> Bool{
-        let spotifyapp: [NSRunningApplication] = NSRunningApplication.runningApplicationsWithBundleIdentifier("com.spotify.client") as [NSRunningApplication]
-        if spotifyapp.isEmpty {
-            return false
-        }else {
-            return true
-        }
     }
     
     // NOT USED AT THE MOMENT
